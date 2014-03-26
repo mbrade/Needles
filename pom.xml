@@ -127,8 +127,7 @@
 	<developers>
 		<developer>
 			<id>mbrade</id>
-			<name>Marco Brade</name>
-			<url>https://github.com/mbrade</url>
+			<name>Marco Brade</name><url>https://github.com/mbrade</url>
 			<roles>
 				<role>architect</role>
 				<role>developer</role>
