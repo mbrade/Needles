@@ -110,9 +110,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:https://svn.code.sf.net/p/javaneedles/needles/trunk</connection>
-		<developerConnection>scm:svn:https://svn.code.sf.net/p/javaneedles/needles/trunk</developerConnection>
-		<url>scm:svn:https://svn.code.sf.net/p/javaneedles/needles/trunk</url>
+		<connection>scm:git:ssh://github.com/Needles.git</connection>
+  		<developerConnection>scm:git:ssh://github.com/Needles.git</developerConnection>
+  		<url>scm:git:ssh://github.com/Needles.git</url>		
 	</scm>
 
 	<properties>
@@ -128,17 +128,7 @@
 		<developer>
 			<id>mbrade</id>
 			<name>Marco Brade</name>
-			<url>https://sourceforge.net/users/mbrade</url>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>shuth</id>
-			<name>Stephan Huth</name>
-			<url>https://sourceforge.net/users/shuth</url>
+			<url>https://github.com/mbrade</url>
 			<roles>
 				<role>architect</role>
 				<role>developer</role>

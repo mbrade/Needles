@@ -2,9 +2,7 @@
 
     Copyright (c) 2013,
     Marco Brade
-    							[https://sourceforge.net/users/mbrade],
-    Stephan Huth
-    							[https://sourceforge.net/users/shuth]
+    							[https://github.com/mbrade]
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
