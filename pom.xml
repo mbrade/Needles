@@ -176,7 +176,7 @@
 		<module>needles-webapp</module>
 		<module>needles-spring-httpinvoker</module>
 		<module>needlesservice</module>
-		<module>needlesservice-client</module>
+		<module>needlesservice-base</module>
 	</modules>
 
 	<build>
