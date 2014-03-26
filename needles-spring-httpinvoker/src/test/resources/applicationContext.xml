@@ -1,0 +1,92 @@
+<!--
+
+    Copyright (c) 2013,
+    Marco Brade
+    							[https://sourceforge.net/users/mbrade],
+    Stephan Huth
+    							[https://sourceforge.net/users/shuth]
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+        * Redistributions of source code must retain the above copyright notice,
+          this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright notice,
+          this list of conditions and the following disclaimer in the documentation
+          and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED.
+    IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+ 
+ 	<bean id="/testService" class="net.sf.needles.spring.httpinvoker.EnhancedHttpInvokerServiceExporter">
+ 		<qualifier value="service"></qualifier>
+ 		<property name="serviceInterface" value="net.sf.needles.spring.service.test.TestService"/>
+ 		<property name="service" ref="testService"/>
+ 	</bean>
+ 	
+ 	<bean id="testService" class="net.sf.needles.spring.service.test.TestServiceImpl"/>
+ 	
+    <bean id="httpServer" class="org.springframework.remoting.support.SimpleHttpServerFactoryBean">
+        <property name="contexts">
+            <util:map>
+                <entry key="/echoService">
+                    <ref bean="/testService"/>
+                </entry>
+            </util:map>
+        </property>
+        <property name="port" value="2345" />
+    </bean>
+    
+    <bean id="testClient" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" depends-on="httpServer, testService">
+    	<qualifier value="local"></qualifier>
+   		<property name="serviceInterface" value="net.sf.needles.spring.service.test.TestService"/>
+   		<property name="serviceUrl" value="http://localhost:2345/echoService"/>
+   		<property name="httpInvokerRequestExecutor" ref="httpInvokerRequestExcecutor"/>
+    </bean>
+    
+    <bean id="httpInvokerRequestExcecutor" class="net.sf.needles.spring.httpinvoker.EnhancedCommonsHttpInvokerRequestExecutor">
+    	<property name="httpClient" ref="httpClient"/>
+    </bean>
+    
+    <bean id="httpClient" class="org.apache.commons.httpclient.HttpClient">
+    	<property name="params">
+    		<bean class="org.apache.commons.httpclient.params.HttpClientParams">
+    			<property name="soTimeout" value="0"/>
+    		</bean>
+    	</property>
+    	<property name="httpConnectionManager">
+    		<bean class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager">
+    			<property name="params">
+    				<bean class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
+    					<property name="connectionTimeout" value="0"/>
+    					<property name="defaultMaxConnectionsPerHost" value="100"/>
+    					<property name="soTimeout" value="0"/>
+    					<property name="staleCheckingEnabled" value="true"/>
+    				</bean>
+    			</property>
+    		</bean>
+    	</property>
+    </bean>
+ 
+</beans>

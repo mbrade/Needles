@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2013,
+    Marco Brade
+    							[https://sourceforge.net/users/mbrade],
+    Stephan Huth
+    							[https://sourceforge.net/users/shuth]
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+        * Redistributions of source code must retain the above copyright notice,
+          this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright notice,
+          this list of conditions and the following disclaimer in the documentation
+          and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED.
+    IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://needles.sourceforge.net/configuration"
+	xmlns:needles="http://needles.sourceforge.net/configuration" elementFormDefault="qualified">
+	<!-- xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.0"-->
+
+	<simpleType name="keyCreator">
+	  <restriction base="string">
+	    <enumeration value="NeedleIdKeyCreator" />
+	    <enumeration value="NeedleNameKeyCreator" />
+	    <enumeration value="SingletonKeyCreator" />
+	  </restriction>
+	</simpleType>
+
+	<complexType name="aggregationFactoryConfiguration" abstract="true">
+		<attribute name="aggregationName" type="string" use="optional"/>
+	</complexType>
+
+	<complexType name="hotspotAggregationFactoryConfiguration">
+		<complexContent>
+			<extension base="needles:aggregationFactoryConfiguration">
+				<attribute name="count" type="int"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="executionAggregationFactoryConfiguration">
+		<complexContent>
+			<extension base="needles:aggregationFactoryConfiguration">
+				<attribute name="keyCreator" type="needles:keyCreator" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="top10AggregationFactoryConfiguration">
+		<complexContent>
+			<extension base="needles:aggregationFactoryConfiguration">
+				<attribute name="keyCreator" type="needles:keyCreator" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="customAggregationFactoryConfiguration">
+		<complexContent>
+			<extension base="needles:aggregationFactoryConfiguration">
+				<sequence>
+					<element name="properties"
+						type="needles:propertyType" maxOccurs="unbounded" minOccurs="0">
+					</element>
+				</sequence>
+				<attribute name="aggregationFactoryClass" type="string" />
+			</extension>
+		</complexContent>
+
+	</complexType>
+
+	<complexType name="persistence">
+		<attribute name="path" type="string" use="required" />
+		<attribute name="name" type="string" use="required" />
+	</complexType>
+	
+	<element name="configuration">
+	    <complexType>
+	    	<sequence maxOccurs="1" minOccurs="0">
+   				<sequence minOccurs="0" maxOccurs="unbounded" id="getAggregations">
+		   			<choice>
+		   				<element name="executionAggregation" type="needles:executionAggregationFactoryConfiguration"/>
+		   				<element name="hotspotAggregation" type="needles:hotspotAggregationFactoryConfiguration"/>
+		   				<element name="top10Aggregation" type="needles:top10AggregationFactoryConfiguration"/>
+		   				<element name="customAggregation" type="needles:customAggregationFactoryConfiguration"/>
+		   			</choice>			
+				</sequence>
+		    	<sequence maxOccurs="1" minOccurs="0">
+		    		<element name="persistenceConfiguration" type="needles:persistence" />
+		    	</sequence>
+	    	</sequence>
+	    	<attribute name="workerClass" type="string" use="optional" />
+	    </complexType>
+    </element>
+    
+
+	<complexType name="propertyType">
+		<attribute name="name" type="string" use="required"/>
+		<attribute name="value" type="string" use="required"/>
+	</complexType>
+</schema>

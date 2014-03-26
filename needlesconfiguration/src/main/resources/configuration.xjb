@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+               jaxb:version="2.0">
+	<jaxb:bindings schemaLocation="configuration.xsd">
+		<jaxb:bindings node="xsd:element[@name='configuration']">
+			<jaxb:bindings node="xsd:complexType">
+				<jaxb:bindings node="xsd:sequence">
+					<jaxb:bindings node="xsd:sequence[@id='getAggregations']">
+			            <jaxb:property name="aggregationFactories"/>
+					</jaxb:bindings>
+				</jaxb:bindings>			
+				<jaxb:bindings node="xsd:attribute[@name='workerClass']">
+					<jaxb:property>
+			          <jaxb:baseType>
+			            <jaxb:javaType name="java.lang.Class" parseMethod="net.sf.needles.configuration.ClassParser.parseClass" printMethod="net.sf.needles.configuration.ClassParser.printClass"/>
+			          </jaxb:baseType>
+			        </jaxb:property>
+		        </jaxb:bindings>
+			</jaxb:bindings>
+		</jaxb:bindings>	
+	</jaxb:bindings>	
+</jaxb:bindings>

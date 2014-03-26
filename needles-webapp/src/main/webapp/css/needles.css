@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2013,
+ * Marco Brade
+ * 							[https://sourceforge.net/users/mbrade],
+ * Stephan Huth
+ * 							[https://sourceforge.net/users/shuth]
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright notice,
+ *       this list of conditions and the following disclaimer in the documentation
+ *       and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+@CHARSET "UTF-8";
+
+h1 {
+	color: white;
+	padding: 20px;
+	text-align: center; background : -moz-linear-gradient( top, #c5deea 0%,
+	#8abbd7 31%, #066dab 100%);
+	/* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #c5deea),
+		color-stop(31%, #8abbd7), color-stop(100%, #066dab) );
+	/* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #c5deea 0%, #8abbd7 31%, #066dab 100%);
+	/* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #c5deea 0%, #8abbd7 31%, #066dab 100%);
+	/* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #c5deea 0%, #8abbd7 31%, #066dab 100%);
+	/* IE10+ */
+	background: linear-gradient(to bottom, #c5deea 0%, #8abbd7 31%, #066dab 100%);
+	background: -moz-linear-gradient(top, #c5deea 0%, #8abbd7 31%, #066dab 100%);
+	/* W3C */
+}
+
+h2 {
+	padding: 10px;
+	color: grey;
+}
+
+div {
+	padding-left: 30px;
+	padding-right: 20px;
+	border-bottom: solid black 0.5px;
+	background-color: #87BAFF;
+}
+
+div.block {
+	/*background-color: #FFFA00;*/
+	border: solid black 0.5px;
+	
+	background-color: rgb(252, 245, 120) background:  -moz-linear-gradient(top, rgb(252, 245, 120)
+		0%, rgb(200, 200, 100) 41%, rgb(189, 200, 100) 100% );
+	background: -moz-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+	/*FF3.6+*/
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%,
+		color-stop(0%, #fefcea), color-stop(100%, #f1da36) );
+	/*Chrome,Safari4+*/
+	background: -webkit-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+	/* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+	Opera 12+
+	background: -ms-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+	/*IE10+*/
+	background: radial-gradient(ellipse at center, #fefcea 0%, #f1da36 100%);
+	
+}
+
+span.needleName {
+	
+}
+
+span.needleDuration {
+	color: maroon;
+}

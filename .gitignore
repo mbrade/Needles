@@ -1,2 +1,6 @@
 *.project
 *.springBeans
+*.prefs
+.svn/
+*.classpath
+needlesconfiguration/src/main/generated-sources/
