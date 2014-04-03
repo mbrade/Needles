@@ -30,6 +30,7 @@ package net.sf.needles;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Interface NeedleInformation.
@@ -57,7 +58,7 @@ public interface NeedleInfo extends Serializable {
      * 
      * @return context informations
      */
-    Serializable[] getContext();
+    Map<String, Object> getContext();
 
     /**
      * Gets the debug lines.

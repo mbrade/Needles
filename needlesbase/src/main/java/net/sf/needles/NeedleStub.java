@@ -28,7 +28,6 @@
 
 package net.sf.needles;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +67,7 @@ public class NeedleStub implements NeedleInfo {
     private StackTraceElement startStackTraceElement;
     private StackTraceElement stopStackTraceElement;
     private List<NeedleInfo> children = new LinkedList<NeedleInfo>();
-    private Serializable[] context;
+    private Map<String, Object> context;
     private Throwable abortReason;
     private boolean fromparallelProcess;
 
@@ -170,7 +169,7 @@ public class NeedleStub implements NeedleInfo {
     }
 
     @Override
-    public Serializable[] getContext() {
+    public Map<String, Object> getContext() {
 	return context;
     }
 

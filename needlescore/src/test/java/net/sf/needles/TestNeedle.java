@@ -228,7 +228,7 @@ public class TestNeedle {
 	needle.stop();
 	Assert.assertTrue(needle.isStopped());
 	Assert.assertNotNull(needle.getStopStackTraceElement());
-	Assert.assertEquals(2, needle.getContext().length);
+	Assert.assertEquals(2, needle.getContext().size());
 	Assert.assertFalse(needle.isAborted());
 	try {
 	    needle.abort(null);

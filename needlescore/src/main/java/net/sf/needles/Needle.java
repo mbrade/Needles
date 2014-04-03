@@ -28,11 +28,12 @@
 
 package net.sf.needles;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import net.sf.needles.renderer.DeepNeedleRenderer;
@@ -64,7 +65,7 @@ public final class Needle implements NeedleInfo {
     private NeedleId needleId;
     private Needle parent;
     private Throwable abortReason;
-    private Serializable[] context;
+    private Map<String, Object> context;
     private final List<String> debugLines = new LinkedList<String>();
     private final LinkedBlockingQueue<Needle> children = new LinkedBlockingQueue<Needle>();
     private boolean fromParallelProcess;//will be set by NeedleContext
@@ -77,16 +78,22 @@ public final class Needle implements NeedleInfo {
      * @param context
      *            the context
      */
-    public Needle(final String name, final List<Serializable> context) {
-	this(name, context.toArray(new Serializable[context.size()]));
+    public Needle(final String name) {
+	this(name, (Map<String, Object>) null);
     }
 
-    public Needle(final String name, final Serializable... context) {
+    public Needle(final String name, final Map<String, Object> context) {
 	if (name == null || name.length() == 0 || name.trim().length() == 0) {
 	    throw new IllegalArgumentException("The name has to be valid and not empty or null.");
 	}
-	this.context = (NeedleConfigFactory.isContextEnabled()) ? context : null;
+	if (NeedleConfigFactory.isContextEnabled()) {
+	    this.context = (context == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(context);
+	}
 	this.name = name;
+    }
+
+    public Needle(final String name, final Object... context) {
+	this(name, toMap(context));
     }
 
     protected Needle(final NeedleInfo needle) {
@@ -107,6 +114,13 @@ public final class Needle implements NeedleInfo {
 	return needle;
     }
 
+    public static Needle start(final String name, final Map<String, Object> context) {
+	final Needle needle = new Needle(name, context);
+	needle.startStackIndex = 4;
+	needle.start();
+	return needle;
+    }
+
     /**
      * Start.
      * 
@@ -116,7 +130,7 @@ public final class Needle implements NeedleInfo {
      *            the context
      * @return the log
      */
-    public static Needle start(final String name, final Serializable... context) {
+    public static Needle start(final String name, final Object... context) {
 	final Needle needle = new Needle(name, context);
 	needle.startStackIndex = 4;
 	needle.start();
@@ -134,6 +148,16 @@ public final class Needle implements NeedleInfo {
 	} else {
 	    throw new IllegalStateException("There is no current log to stop within this Threastack.");
 	}
+    }
+
+    private static Map<String, Object> toMap(final Object... context) {
+	final Map<String, Object> result = new HashMap<String, Object>();
+	for (final Object object : context) {
+	    if (object != null) {
+		result.put(object.toString(), object);
+	    }
+	}
+	return result;
     }
 
     /**
@@ -182,10 +206,11 @@ public final class Needle implements NeedleInfo {
 	needle.setParent(this);
     }
 
-    /*
-    public final void addNeedleToCurrentThreadStack() {
-    getNeedleContext().addNeedleToCurrentThreadStack(this);
-    }*/
+    public void addContextEntry(final String key, final Object value) {
+	if (NeedleConfigFactory.isContextEnabled()) {
+	    context.put(key, value);
+	}
+    }
 
     public Needle debug(final CharSequence... debugLines) {
 	if (NeedleConfigFactory.isDebugEnabled()) {
@@ -252,7 +277,7 @@ public final class Needle implements NeedleInfo {
      * @see net.sf.needles.NeedleInfo#getContext()
      */
     @Override
-    public Serializable[] getContext() {
+    public Map<String, Object> getContext() {
 	return context;
     }
 
@@ -473,7 +498,8 @@ public final class Needle implements NeedleInfo {
 	name = needle.getName();
 	needleId = needle.getId();
 	if (NeedleConfigFactory.isContextEnabled()) {
-	    context = needle.getContext();
+	    final Map<String, Object> context = needle.getContext();
+	    this.context = (context == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(context);
 	}
 	abortReason = needle.getAbortReason();
 	debug(needle.getDebugLines());

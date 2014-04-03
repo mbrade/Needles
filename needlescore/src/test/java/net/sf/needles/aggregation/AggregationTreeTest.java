@@ -179,7 +179,7 @@ public class AggregationTreeTest {
 	final Map<AggregationKey, Aggregation<?>> rootAggregations = GlobalContext.getAggregations(factory.getName());
 	final Top10AggregationImpl agg = (Top10AggregationImpl) rootAggregations.values().iterator().next();
 	for (int i = 1; i <= 10; i++) {
-	    Assert.assertEquals(i, (agg.getTop10Needles().get(i - 1)).getContext()[0]);
+	    Assert.assertEquals(i, (agg.getTop10Needles().get(i - 1)).getContext().get(new Integer(i).toString()));
 	}
     }
 

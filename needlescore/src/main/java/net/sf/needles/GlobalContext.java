@@ -66,12 +66,6 @@ public class GlobalContext {
 	return null;
     }
 
-    //
-    //    public static Class<? extends Aggregation<?>> getAggregationClassForName(final String aggregationName) {
-    //	final AggregationFactory<? extends Aggregation<?>> factory = worker.get().getAggregationFactory(aggregationName);
-    //	return factory.getAggregationClass();
-    //    }
-
     /**
      * Gets the aggregation factories with there names as key.
      * 

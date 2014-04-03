@@ -29,6 +29,10 @@
 package net.sf.needles.renderer;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import net.sf.needles.NeedleInfo;
 
@@ -61,14 +65,18 @@ public abstract class AbstractRendererHelper implements Serializable {
      */
     public CharSequence getFormatedContext(final NeedleInfo needle) {
 	final StringBuilder ret = new StringBuilder();
-	final Serializable[] infos = needle.getContext();
-	if (infos != null && infos.length >= 1) {
-	    ret.append(" O:");
-	    for (int i = 0; i < infos.length; i++) {
-		final Object myObject = infos[i];
-		ret.append("{").append((myObject != null) ? myObject.toString() : "null").append("}");
-		if (i < infos.length - 1) {
-		    ret.append(",");
+	final Map<String, Object> infos = needle.getContext();
+	if (infos != null && !infos.isEmpty()) {
+	    ret.append(" C:");
+	    final Set<String> keySet = new HashSet<String>(infos.keySet());
+	    for (final Iterator<String> iterator = keySet.iterator(); iterator.hasNext();) {
+		final String key = iterator.next();
+		final Object object = infos.get(key);
+		if (object != null) {
+		    ret.append('{').append(key).append('=').append((object != null) ? object.toString() : "null").append('}');
+		}
+		if (iterator.hasNext()) {
+		    ret.append(',');
 		}
 	    }
 	}
