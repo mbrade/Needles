@@ -98,8 +98,8 @@ public abstract class AbstractAggregationFactory<AGGREGATION extends Aggregation
 
     @Override
     public void fillPersistenceData(final PersistenceData persistenceData) {
+	lock.readLock().lock();
 	try {
-	    lock.readLock().lock();
 	    persistenceData.setAggregationData(new HashMap<Serializable, AGGREGATION>(rootAggregations));
 	} finally {
 	    lock.readLock().unlock();
@@ -144,8 +144,8 @@ public abstract class AbstractAggregationFactory<AGGREGATION extends Aggregation
 
     @Override
     public List<AGGREGATION> getRootAggregations() {
+	lock.readLock().lock();
 	try {
-	    lock.readLock().lock();
 	    return new ArrayList<AGGREGATION>(rootAggregations.values());
 	} finally {
 	    lock.readLock().unlock();
@@ -167,8 +167,8 @@ public abstract class AbstractAggregationFactory<AGGREGATION extends Aggregation
     @SuppressWarnings("unchecked")
     @Override
     public void loadPersistenceData(final PersistenceData value) {
+	lock.writeLock().lock();
 	try {
-	    lock.writeLock().lock();
 	    this.rootAggregations.putAll((HashMap<AggregationKey, AGGREGATION>) value.getAggregationData());
 	} finally {
 	    lock.writeLock().unlock();
@@ -195,14 +195,14 @@ public abstract class AbstractAggregationFactory<AGGREGATION extends Aggregation
 
     private AGGREGATION createRootAggregation(final NeedleInfo needle) {
 	AGGREGATION result = null;
+	lock.readLock().lock();
 	try {
 	    final AggregationKey needleKey = getKeyCreator().getKey(needle);
-	    lock.readLock().lock();
 	    result = rootAggregations.get(needleKey);
 	    if (result == null) {
+		lock.readLock().unlock();
+		lock.writeLock().lock();
 		try {
-		    lock.readLock().unlock();
-		    lock.writeLock().lock();
 		    result = rootAggregations.get(needleKey);
 		    if (result == null) {
 			result = createAggregation(needle);

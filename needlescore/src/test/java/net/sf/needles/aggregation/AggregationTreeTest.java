@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
-import net.sf.needles.GlobalContext;
+import net.sf.needles.AggregationContext;
 import net.sf.needles.Needle;
 import net.sf.needles.NeedleConfig;
 import net.sf.needles.NeedleConfigFactory;
@@ -52,7 +52,7 @@ public class AggregationTreeTest {
 	final AggregationWorker worker = new SimpleAggregationWorker();
 	final AggregationFactory<? extends Aggregation<?>> factory = new ExecutionAggregationFactory();
 	worker.addAggregationFactory(factory);
-	GlobalContext.setAggregationWorker(worker);
+	AggregationContext.setAggregationWorker(worker);
 	NeedleConfigFactory.setDefaultNeedleConfig(NeedleConfig.DEBUG);
     }
 
@@ -62,7 +62,7 @@ public class AggregationTreeTest {
 	Needle.start("id2");
 	Needle.stopCurrentNeedle();
 	Needle.stopCurrentNeedle();
-	final List<AggregationFactory<? extends Aggregation<?>>> aggregators = GlobalContext.getAggregationWorker().getAggregationFactories();
+	final List<AggregationFactory<? extends Aggregation<?>>> aggregators = AggregationContext.getAggregationWorker().getAggregationFactories();
 	Assert.assertEquals(1, aggregators.size());
 	Assert.assertEquals(1, aggregators.get(0).getRootAggregations().size());
 	Assert.assertEquals("id1", aggregators.get(0).getRootAggregations().get(0).getNeedleName());
@@ -76,7 +76,7 @@ public class AggregationTreeTest {
 	final int measures = 20;
 	Assert.assertTrue("Measures should be greater than count.", measures > hotspotCount);
 	final AggregationFactory<HotspotAggregation> factory = new HotspotAggregationFactory(hotspotCount);
-	GlobalContext.getAggregationWorker().addAggregationFactory(factory);
+	AggregationContext.getAggregationWorker().addAggregationFactory(factory);
 	for (int i = 0; i < 20; i++) {
 	    Needle.start(i + "");
 	    Thread.sleep(((i >= hotspotCount) ? 100 : 0) * i);
@@ -84,7 +84,7 @@ public class AggregationTreeTest {
 	    Needle.stopCurrentNeedle();
 	    Needle.stopCurrentNeedle();
 	}
-	final Map<AggregationKey, Aggregation<?>> aggregations = GlobalContext.getAggregations(factory.getName());
+	final Map<AggregationKey, Aggregation<?>> aggregations = AggregationContext.getAggregations(factory.getName());
 	Assert.assertEquals(1, aggregations.size());
 	final Aggregation<?> aggregation = aggregations.values().iterator().next();
 	final HotspotAggregationImpl hag = (HotspotAggregationImpl) aggregation;
@@ -105,9 +105,9 @@ public class AggregationTreeTest {
     public void testRecursion() {
 	final AggregationFactory<ExecutionAggregation> factory = new ExecutionAggregationFactory(NeedleNameKeyCreator.INSTANCE, "Second ExecutionAggregation");
 	final String aggregationKey = factory.getName();
-	GlobalContext.getAggregationWorker().addAggregationFactory(factory);
+	AggregationContext.getAggregationWorker().addAggregationFactory(factory);
 	recursion(5);
-	final Map<String, List<? extends Aggregation<?>>> aggregations = GlobalContext.getAggregations();
+	final Map<String, List<? extends Aggregation<?>>> aggregations = AggregationContext.getAggregations();
 	Assert.assertEquals(2, aggregations.size());
 	for (final Map.Entry<String, List<? extends Aggregation<?>>> aggregation : aggregations.entrySet()) {
 	    if (aggregation.getKey().equals(aggregationKey)) {
@@ -139,7 +139,7 @@ public class AggregationTreeTest {
 	final AggregationWorker worker = new SimpleAggregationWorker();
 	final AggregationFactory<Top10Aggregation> factory = new Top10AggregationFactory();
 	worker.addAggregationFactory(factory);
-	GlobalContext.setAggregationWorker(worker);
+	AggregationContext.setAggregationWorker(worker);
 	Needle.start("1", 1);
 	Thread.sleep(500);
 	Needle.stopCurrentNeedle();
@@ -176,7 +176,7 @@ public class AggregationTreeTest {
 	Needle.start("1", 12);
 	Thread.sleep(10);
 	Needle.stopCurrentNeedle();
-	final Map<AggregationKey, Aggregation<?>> rootAggregations = GlobalContext.getAggregations(factory.getName());
+	final Map<AggregationKey, Aggregation<?>> rootAggregations = AggregationContext.getAggregations(factory.getName());
 	final Top10AggregationImpl agg = (Top10AggregationImpl) rootAggregations.values().iterator().next();
 	for (int i = 1; i <= 10; i++) {
 	    Assert.assertEquals(i, (agg.getTop10Needles().get(i - 1)).getContext().get(new Integer(i).toString()));

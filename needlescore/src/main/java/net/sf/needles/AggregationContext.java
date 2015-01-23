@@ -45,7 +45,7 @@ import net.sf.needles.aggregation.worker.AsyncAggregationWorker;
 /**
  * The Class GlobalContext.
  */
-public class GlobalContext {
+public class AggregationContext {
 
     private static AtomicReference<AggregationWorker> worker = new AtomicReference<AggregationWorker>(new AsyncAggregationWorker());
 
@@ -55,7 +55,7 @@ public class GlobalContext {
 	Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
-    private GlobalContext() {
+    private AggregationContext() {
     }
 
     public static Aggregation<?> getAggregation(final String aggregationName, final AggregationKey aggregationKey) {
@@ -173,7 +173,7 @@ public class GlobalContext {
 	if (worker == null) {
 	    throw new IllegalArgumentException("An AggregationWorker has to be set.");
 	}
-	final AggregationWorker oldWorker = GlobalContext.worker.getAndSet(worker);
+	final AggregationWorker oldWorker = AggregationContext.worker.getAndSet(worker);
 	if (oldWorker != null && oldWorker != worker) {
 	    oldWorker.shutdown();
 	}
@@ -214,7 +214,7 @@ public class GlobalContext {
 	    try {
 		shutdown();
 	    } catch (final Exception e) {
-		e.printStackTrace();//using log4j on shutdown is mostly a bad idea.
+		e.printStackTrace();//using log4j on shutdown is most likely a bad idea.
 	    }
 	}
 

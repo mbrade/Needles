@@ -47,17 +47,22 @@ public class NeedleContext {
 
     private final static Logger LOG = Logger.getLogger(NeedleContext.class);
     private static final Charset charset = Charset.forName("UTF-8");
-    private static MessageDigest digest = null;
+    private static HashBuilder hashBuilder = null;
     static {
+	MessageDigest digest = null;
 	try {
 	    digest = MessageDigest.getInstance("MD5");
 	} catch (final NoSuchAlgorithmException nsa) {
 	    try {
 		digest = MessageDigest.getInstance("SH1");
 	    } catch (final NoSuchAlgorithmException e) {
-		LOG.warn("Couldn't not find hashalgorithms MD5 and SH1");
-		digest = null;
+		LOG.warn("Couldn't not find hash algorithms MD5 and SH1");
 	    }
+	}
+	if (digest != null) {
+	    hashBuilder = new MessageDigestHashBuilder(digest);
+	} else {
+	    hashBuilder = new StringHashBuilder();
 	}
     }
 
@@ -70,8 +75,8 @@ public class NeedleContext {
 
     //shared over all LogContexts
     private static ConcurrentHashMap<NeedleId, StackTraceElement[]> stackTraceElements = new ConcurrentHashMap<NeedleId, StackTraceElement[]>();
-    private static boolean doRegisterUncaughtExceptionHandler = false;
 
+    private static boolean doRegisterUncaughtExceptionHandler = false;
     private final ThreadLogs threadLogs = new ThreadLogs();
 
     private NeedleContext() {
@@ -154,11 +159,7 @@ public class NeedleContext {
     }
 
     private static byte[] getHash(final String value) {
-	try {
-	    return ((MessageDigest) digest.clone()).digest(charset.encode(value).array());
-	} catch (final CloneNotSupportedException e) {
-	    return charset.encode(value).array();
-	}
+	return hashBuilder.buildHash(value);
     }
 
     /**
@@ -170,7 +171,6 @@ public class NeedleContext {
 	final StringBuilder builder = new StringBuilder();
 	if (needle.getParentNeedle() != null) {
 	    builder.append(needle.getParentNeedle().getId());
-	    //builder.append(getPath(needle.getParentNeedle()));
 	}
 	builder.append("/").append(needle.getName());
 	return builder;
@@ -199,7 +199,7 @@ public class NeedleContext {
 
     private void afterStopNeedle(final NeedleInfo needle) {
 	threadLogs.pop();
-	GlobalContext.aggregateNeedle(needle);
+	AggregationContext.aggregateNeedle(needle);
     }
 
     /* (non-Javadoc)
@@ -337,6 +337,34 @@ public class NeedleContext {
 	afterStopNeedle(needle);
     }
 
+    private static class MessageDigestHashBuilder implements HashBuilder {
+
+	private final MessageDigest digest;
+
+	private MessageDigestHashBuilder(final MessageDigest digest) {
+	    this.digest = digest;
+	}
+
+	@Override
+	public byte[] buildHash(final String input) {
+	    try {
+		return ((MessageDigest) digest.clone()).digest(charset.encode(input).array());
+	    } catch (final CloneNotSupportedException e) {
+		return charset.encode(input).array();
+	    }
+	}
+
+    }
+
+    private static class StringHashBuilder implements HashBuilder {
+
+	@Override
+	public byte[] buildHash(final String input) {
+	    return charset.encode(input).array();
+	}
+
+    }
+
     private static class ThreadLogs {
 
 	/** The needles. */
@@ -403,5 +431,9 @@ public class NeedleContext {
 	    }
 	    return needle;
 	}
+    }
+
+    interface HashBuilder {
+	byte[] buildHash(String input);
     }
 }

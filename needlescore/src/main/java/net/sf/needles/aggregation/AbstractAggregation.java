@@ -148,13 +148,13 @@ public abstract class AbstractAggregation<AGGREGATION extends Aggregation<AGGREG
     @Override
     public final AGGREGATION getChildAggregation(final NeedleInfo needle) {
 	final AggregationKey aggregationKey = generateAggregationKey(needle);
+	lock.readLock().lock();
 	try {
-	    lock.readLock().lock();
 	    AGGREGATION result = children.get(aggregationKey);
 	    if (result == null) {
 		lock.readLock().unlock();
+		lock.writeLock().lock();
 		try {
-		    lock.writeLock().lock();
 		    result = children.get(aggregationKey);
 		    if (result == null) {
 			result = getAggregationFactory().createAggregation(needle);
@@ -177,8 +177,8 @@ public abstract class AbstractAggregation<AGGREGATION extends Aggregation<AGGREG
      */
     @Override
     public final List<AGGREGATION> getChildAggregations() {
+	lock.readLock().lock();
 	try {
-	    lock.readLock().lock();
 	    return new ArrayList<AGGREGATION>(children.values());
 	} finally {
 	    lock.readLock().unlock();

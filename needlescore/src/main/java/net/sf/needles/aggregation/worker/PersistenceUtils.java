@@ -26,7 +26,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sf.needles.persistence;
+package net.sf.needles.aggregation.worker;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -46,11 +46,12 @@ import java.util.Map;
 
 import net.sf.needles.aggregation.AggregationFactory;
 import net.sf.needles.configuration.PersistenceConfiguration;
+import net.sf.needles.persistence.PersistenceData;
 
 /**
  * The Class PersistenceManager.
  */
-public class PersistenceUtils {
+public final class PersistenceUtils {
 
     private final static org.apache.log4j.Logger LOG = org.apache.log4j.LogManager.getLogger(PersistenceUtils.class);
 
@@ -60,10 +61,18 @@ public class PersistenceUtils {
     private PersistenceUtils() {
     }
 
+    private static Map<String, ? extends AggregationFactory<?>> createAggregationMap(final Collection<? extends AggregationFactory<?>> aggregations) {
+	final Map<String, AggregationFactory<?>> result = new HashMap<String, AggregationFactory<?>>();
+	for (final AggregationFactory<?> factory : aggregations) {
+	    result.put(factory.getName(), factory);
+	}
+	return result;
+    }
+
     /**
      * Load aggregation data.
      */
-    public static void loadAggregationData(final PersistenceConfiguration persistenceConfiguration, final Collection<? extends AggregationFactory<?>> aggregationFactories) {
+    static void loadAggregationData(final PersistenceConfiguration persistenceConfiguration, final Collection<? extends AggregationFactory<?>> aggregationFactories) {
 	if (persistenceConfiguration != null && persistenceConfiguration.getPersistencePath() != null && persistenceConfiguration.getPersistenceName() != null) {
 	    final Map<String, ? extends AggregationFactory<?>> aggregationMap = createAggregationMap(aggregationFactories);
 	    ObjectInputStream ois = null;
@@ -71,7 +80,7 @@ public class PersistenceUtils {
 	    if (f.exists() && f.canRead()) {
 		try {
 		    try {
-			ois = new ObjectInputStream(new BufferedInputStream(Channels.newInputStream(new FileInputStream(f).getChannel()), 2048));
+			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(f), 2048));
 			@SuppressWarnings("unchecked")
 			final List<PersistenceData> dataList = (List<PersistenceData>) ois.readObject();
 			for (final PersistenceData entry : dataList) {
@@ -82,7 +91,7 @@ public class PersistenceUtils {
 			}
 		    } finally {
 			if (ois != null) {
-			    ois.close();//this will close all underlaying streams and channels
+			    ois.close();//this will close all underlaying streams
 			}
 		    }
 		} catch (final FileNotFoundException fnfe) {
@@ -101,7 +110,7 @@ public class PersistenceUtils {
     /**
      * Persist aggregation data.
      */
-    public static void persistAggregationData(final PersistenceConfiguration persistenceConfiguration, final Collection<? extends AggregationFactory<?>> aggregationFactories) {
+    static void persistAggregationData(final PersistenceConfiguration persistenceConfiguration, final Collection<? extends AggregationFactory<?>> aggregationFactories) {
 	if (persistenceConfiguration != null && persistenceConfiguration.getPersistencePath() != null && persistenceConfiguration.getPersistenceName() != null) {
 	    final Map<String, ? extends AggregationFactory<?>> aggregationMap = createAggregationMap(aggregationFactories);
 	    ObjectOutputStream oos = null;
@@ -113,6 +122,10 @@ public class PersistenceUtils {
 		dataList.add(persistenceData);
 	    }
 	    final File f = new File(persistenceConfiguration.getPersistencePath(), persistenceConfiguration.getPersistenceName());
+	    final File parentFile = f.getParentFile();
+	    if (parentFile != null) {
+		parentFile.mkdirs();
+	    }
 	    try {
 		try {
 		    oos = new ObjectOutputStream(new BufferedOutputStream(Channels.newOutputStream(new FileOutputStream(f).getChannel()), 2048));
@@ -127,13 +140,5 @@ public class PersistenceUtils {
 
 	    }
 	}
-    }
-
-    private static Map<String, ? extends AggregationFactory<?>> createAggregationMap(final Collection<? extends AggregationFactory<?>> aggregations) {
-	final Map<String, AggregationFactory<?>> result = new HashMap<String, AggregationFactory<?>>();
-	for (final AggregationFactory<?> factory : aggregations) {
-	    result.put(factory.getName(), factory);
-	}
-	return result;
     }
 }

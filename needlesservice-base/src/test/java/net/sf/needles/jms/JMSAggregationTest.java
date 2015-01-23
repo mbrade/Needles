@@ -28,7 +28,7 @@
 
 package net.sf.needles.jms;
 
-import net.sf.needles.GlobalContext;
+import net.sf.needles.AggregationContext;
 import net.sf.needles.Needle;
 import net.sf.needles.NeedleConfig;
 import net.sf.needles.NeedleConfigFactory;
@@ -51,13 +51,13 @@ public class JMSAggregationTest {
 	factory.setJndiInitialContextFactoryClass("org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 	factory.setJndiProviderUrl("tcp://localhost:61616");
 	simpleAggregationWorker.addAggregationFactory(factory);
-	GlobalContext.setAggregationWorker(simpleAggregationWorker);
-	GlobalContext.start();
+	AggregationContext.setAggregationWorker(simpleAggregationWorker);
+	AggregationContext.start();
     }
 
     @AfterClass
     public final static void shutdown() {
-	GlobalContext.shutdown();
+	AggregationContext.shutdown();
     }
 
     @Test

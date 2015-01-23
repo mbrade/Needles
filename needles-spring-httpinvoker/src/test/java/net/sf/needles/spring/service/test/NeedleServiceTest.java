@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import junit.framework.Assert;
-import net.sf.needles.GlobalContext;
+import net.sf.needles.AggregationContext;
 import net.sf.needles.Needle;
 import net.sf.needles.NeedleConfig;
 import net.sf.needles.NeedleConfigFactory;
@@ -62,14 +62,14 @@ public class NeedleServiceTest {
 
     @BeforeClass
     public static void setup() {
-	GlobalContext.setAggregationWorker(new SimpleAggregationWorker());
-	GlobalContext.getAggregationWorker().addAggregationFactory(new ExecutionAggregationFactory(NeedleIdKeyCreator.INSTANCE, "execution"));
-	GlobalContext.start();
+	AggregationContext.setAggregationWorker(new SimpleAggregationWorker());
+	AggregationContext.getAggregationWorker().addAggregationFactory(new ExecutionAggregationFactory(NeedleIdKeyCreator.INSTANCE, "execution"));
+	AggregationContext.start();
     }
 
     @AfterClass
     public static void shutdown() {
-	GlobalContext.shutdown();
+	AggregationContext.shutdown();
     }
 
     @Test
@@ -92,7 +92,7 @@ public class NeedleServiceTest {
 	Assert.assertEquals(2, NeedleContext.getRootNeedles().get(0).getChildCount());
 	Assert.assertEquals(1, NeedleContext.getRootNeedles().get(0).getChildren().get(0).getChildCount());
 
-	final Map<AggregationKey, Map<String, Aggregation<?>>> aggregations = GlobalContext.getAggregations(Arrays.asList(new AggregationKey[] { startInvokerService.getId(), afterService1.getId(),
+	final Map<AggregationKey, Map<String, Aggregation<?>>> aggregations = AggregationContext.getAggregations(Arrays.asList(new AggregationKey[] { startInvokerService.getId(), afterService1.getId(),
 	                                                                                                                                        afterService2.getId() }));
 	for (final AggregationKey key : aggregations.keySet()) {
 	    final Map<String, Aggregation<?>> map = aggregations.get(key);

@@ -39,7 +39,7 @@ public enum NeedleConfig implements Serializable {
      */
     QUIET(0),
     /**
-     * Only do measurements but get no contexts
+     * Only do measurements but get and create no context informations
      */
     MEASUREMENT(1),
     /**

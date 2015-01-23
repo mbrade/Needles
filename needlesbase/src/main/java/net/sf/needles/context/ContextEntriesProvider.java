@@ -26,43 +26,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sf.needles.configuration;
+package net.sf.needles.context;
 
-import java.io.File;
+import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import net.sf.needles.NeedleInfo;
 
-public class PersistenceConfiguration {
+public interface ContextEntriesProvider {
 
-    private final String persistencePath;
-    private final String persistenceName;
-
-    public PersistenceConfiguration(final String filePath) {
-	if (StringUtils.isBlank(filePath)) {
-	    throw new IllegalArgumentException("The filePath needs to be valid and not empty.");
-	}
-	final File file = new File(filePath);
-	persistencePath = file.getPath();
-	persistenceName = file.getName();
-    }
-
-    public PersistenceConfiguration(final String path, final String name) {
-	if (path == null) {
-	    throw new IllegalArgumentException("The path needs to be valid and not empty.");
-	}
-	if (name == null) {
-	    throw new IllegalArgumentException("The name needs to be valid and not empty.");
-	}
-	persistencePath = path;
-	persistenceName = name;
-    }
-
-    public String getPersistenceName() {
-	return persistenceName;
-    }
-
-    public String getPersistencePath() {
-	return persistencePath;
-    }
+    /**
+     * Creates the context map for the given NeedleInfo object. The context informations will be added to the corresponding Needle object. Might return null if no context informations should be
+     * appended.
+     * 
+     * @param needle
+     * @return The context informations.
+     */
+    public Map<String, Object> addContextInformations(NeedleInfo needle);
 
 }

@@ -38,7 +38,6 @@ import net.sf.needles.NeedleInfo;
 import net.sf.needles.aggregation.Aggregation;
 import net.sf.needles.aggregation.AggregationFactory;
 import net.sf.needles.configuration.PersistenceConfiguration;
-import net.sf.needles.persistence.PersistenceUtils;
 
 import org.apache.log4j.Logger;
 
@@ -60,14 +59,10 @@ public abstract class AggregationWorker {
      * @param factory
      *            the factory
      */
-    //<AGGREGATION extends Aggregation<AGGREGATION>, FACTORY extends AggregationFactory<AGGREGATION>>
     public void addAggregationFactory(final AggregationFactory<? extends Aggregation<?>> factory) {
 	aggregatorMap.putIfAbsent(factory.getName(), createAggregator(factory));
     }
 
-    /* (non-Javadoc)
-     * @see net.sf.needles.aggregation.AggregationHandler#notifyAddedLog(net.sf.needles.Needle)
-     */
     /**
      * Aggregate.
      * 

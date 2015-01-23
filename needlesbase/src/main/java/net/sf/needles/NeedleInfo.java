@@ -165,8 +165,18 @@ public interface NeedleInfo extends Serializable {
      */
     boolean isAborted();
 
+    /**
+     * Indicator that should return true if the Needle has been created by another concurrent thread.
+     * 
+     * @return
+     */
     boolean isFromParallelProcess();
 
+    /**
+     * Returns true if this is the root of a method call.
+     * 
+     * @return true if this is a root.
+     */
     boolean isRoot();
 
     /**
@@ -183,5 +193,10 @@ public interface NeedleInfo extends Serializable {
      */
     boolean isStopped();
 
+    /**
+     * Creates a stub object that is unbound to any Needles contexts. This can be used to serialize.
+     * 
+     * @return {@link NeedleStub}
+     */
     NeedleStub toNeedleStub();
 }

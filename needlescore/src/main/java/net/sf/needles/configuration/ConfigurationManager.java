@@ -40,7 +40,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import net.sf.needles.GlobalContext;
+import net.sf.needles.AggregationContext;
 import net.sf.needles.NeedleException;
 import net.sf.needles.aggregation.AggregationFactory;
 import net.sf.needles.aggregation.ExecutionAggregationFactory;
@@ -71,7 +71,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * Configures the {@link GlobalContext} with an {@link AggregationWorker} and a list of {@link AggregationFactory}s according to the given {@link Configuration}.
+     * Configures the {@link AggregationContext} with an {@link AggregationWorker} and a list of {@link AggregationFactory}s according to the given {@link Configuration}.
      * 
      * @param configuration
      *            the configuration
@@ -85,7 +85,7 @@ public class ConfigurationManager {
 	    try {
 		final Class<?> workerClass = configuration.getWorkerClass();
 		worker = (AggregationWorker) workerClass.newInstance();
-		GlobalContext.setAggregationWorker(worker);
+		AggregationContext.setAggregationWorker(worker);
 	    } catch (final InstantiationException e) {
 		throw new NeedleException(String.format("Failed to instantiate AggregationWorker class: %1$s", configuration.getWorkerClass()), e);
 	    } catch (final IllegalAccessException e) {
@@ -93,7 +93,7 @@ public class ConfigurationManager {
 	    }
 	}
 
-	worker = GlobalContext.getAggregationWorker();
+	worker = AggregationContext.getAggregationWorker();
 	if (worker != null) {
 	    if (configuration.getPersistenceConfiguration() == null) {
 		LOG.info("No needles persistenceConfiguration set.");
@@ -188,7 +188,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * Loads the configuration from the given {@link File}. You can get the configuration with {@link #getConfiguration()} and modify it programmatically. To initialize the {@link GlobalContext} you
+     * Loads the configuration from the given {@link File}. You can get the configuration with {@link #getConfiguration()} and modify it programmatically. To initialize the {@link AggregationContext} you
      * have to call {@link #configure()}
      * 
      * @param file
